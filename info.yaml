@@ -3,54 +3,60 @@ project:
   title:        "copperpilot-tpu-ttihp"      # Project title
   author:       "AdityaNG"      # Your name
   discord:      "adityang5"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "CopperPilot's Tiny Tapeout TPU"      # One line description of what your project does
+  description:  "CopperPilot Tiny Tapeout TPU (2x2 systolic matmul)"      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
+  clock_hz:     50000000       # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
   tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_example"
+  top_module:  "tt_um_copperpilot_tpu"
 
   # List your project's source files here.
   # Source files must be in ./src and you must list each source file separately, one per line.
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - "project.v"
+    - "copperpilot_tpu.v"
+    - "memory.v"
+    - "control_unit.v"
+    - "mmu_feeder.v"
+    - "systolic_array_2x2.v"
+    - "PE.v"
+    - "delay_cell.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
   # Inputs
-  ui[0]: ""
-  ui[1]: ""
-  ui[2]: ""
-  ui[3]: ""
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  ui[0]: "Signed operand bit0 (matrix element LSB)"
+  ui[1]: "Signed operand bit1"
+  ui[2]: "Signed operand bit2"
+  ui[3]: "Signed operand bit3"
+  ui[4]: "Signed operand bit4"
+  ui[5]: "Signed operand bit5"
+  ui[6]: "Signed operand bit6"
+  ui[7]: "Signed operand bit7 (sign bit)"
 
   # Outputs
-  uo[0]: ""
-  uo[1]: ""
-  uo[2]: ""
-  uo[3]: ""
-  uo[4]: ""
-  uo[5]: ""
-  uo[6]: ""
-  uo[7]: ""
+  uo[0]: "Result byte bit0 (signed 8-bit chunk)"
+  uo[1]: "Result byte bit1"
+  uo[2]: "Result byte bit2"
+  uo[3]: "Result byte bit3"
+  uo[4]: "Result byte bit4"
+  uo[5]: "Result byte bit5"
+  uo[6]: "Result byte bit6"
+  uo[7]: "Result byte bit7 (sign bit)"
 
   # Bidirectional pins
-  uio[0]: ""
-  uio[1]: ""
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
-  uio[5]: ""
-  uio[6]: ""
-  uio[7]: ""
+  uio[0]: "load_en: when 1, writes ui_in into internal memory"
+  uio[1]: "transpose: if 1, treats B as transposed"
+  uio[2]: "activation: if 1, applies ReLU on systolic outputs"
+  uio[3]: "Unused"
+  uio[4]: "Unused"
+  uio[5]: "control state bit5 (driven when uio_oe[5]=1)"
+  uio[6]: "control state bit6 (driven when uio_oe[6]=1)"
+  uio[7]: "done: goes high when output stream is valid"
 
 # Do not change!
 yaml_version: 6
